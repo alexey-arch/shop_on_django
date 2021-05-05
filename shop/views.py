@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.views.generic import DetailView
 from .models import *
 
 
@@ -17,29 +18,21 @@ def index(request):
         'oled_lg': oledlg
     })
 
-def pc_notebook(request):
-    laptops = Laptops.objects.all()
-    pc = Pc.objects.all()
+class ProductDetailViews(DetailView):
+    CT_MODEL_MODEL_CLASS = {
+        'notebook': Laptops,
+        'smartphone': Smartphones,
+        'tables': Tablet,
+        'pc': Pc,
+        'tv': Tv,
+        'projector': Projector
+    }
 
-    return render(request, 'notebook.html', {
-        'product': laptops,
-        'pc': pc
-    })
+    def dispatch(self, request, *args, **kwargs):
+        self.model = self.CT_MODEL_MODEL_CLASS[kwargs['ct_model']]
+        self.queryset = self.model._base_manager.all()
+        return super().dispatch(request, *args, **kwargs)
 
-def smartphones(request):
-    smartphone = Smartphones.objects.all()
-    tablet = Tablet.objects.all()
-
-    return render(request, 'smartphones.html', {
-        'smartphone': smartphone,
-        'tablet': tablet
-    })
-
-def tv(request):
-    tv = Tv.objects.all()
-    projector =  Projector.objects.all()
-
-    return render(request, 'tv.html', {
-        'tv': tv,
-        'projector': projector
-    })
+    context_object_name = 'product'
+    template_name = 'product_detail.html'
+    slug_url_kwarg = 'slug'

@@ -5,8 +5,13 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.utils import timezone
 from django.db.models import Count
 from PIL import Image
+from django.urls import reverse
 
 User = get_user_model()
+
+def get_product_url(obj, viewname ):
+    ct_model = obj.__class__._meta.model_name
+    return reverse(viewname, kwargs={'ct_model': ct_model, 'slug': obj.slug})
 
 class Main_Category(models.Model):
     """
@@ -78,7 +83,7 @@ class Smartphones(Product):
     screen_resolution = models.CharField(max_length=200, verbose_name='Разрешение экрана')
     system = models.CharField(max_length=200, verbose_name='Операционная система')
     sim_quantity = models.DecimalField(max_digits=2, decimal_places=0, verbose_name='Количество SIM')
-    memory_size = models.DecimalField(max_digits=4, decimal_places=0, verbose_name='Обьем встроенной  паняти')
+    memory_size = models.DecimalField(max_digits=4, decimal_places=0, verbose_name='Обьем встроенной паняти')
     main_camera = models.CharField(max_length=200, verbose_name='Основная камера')
     front_camera = models.CharField(max_length=200, verbose_name='Фрональная камера')
     features = models.CharField(max_length=200, verbose_name='Особености')
@@ -189,7 +194,7 @@ class Projector(Product):
         verbose_name_plural = 'Проекторы'
 
     screen_resolution = models.CharField(max_length=200, verbose_name='Разрешение экрана')
-    max_screen_resolution = models.CharField(max_length=200, verbose_name='Мфксимальное разрешение экрана ')
+    max_screen_resolution = models.CharField(max_length=200, verbose_name='Максимальное разрешение экрана ')
     three_d = models.BooleanField(default=False, verbose_name='Поддержка 3D')
     Max_projection_distance = models.DecimalField(max_digits=3, decimal_places=0, verbose_name='Максимальное проекционное расстояние') 
     min_projection_distance = models.DecimalField(max_digits=3, decimal_places=0, verbose_name='Минимальное проекционное расстояние')  

@@ -13,7 +13,39 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <style>
             body {background-image: url(/media/media/bg.jpg);}
-
+            .d7 {background: rgba(255, 255, 255, 0);}
+            .d7:after {content:""; clear:both; display:table}
+            .d7 form {
+            width: auto;
+            float: right;
+            margin-right: 30px;
+            }
+            .d7 input {
+            width: 250px;
+            height: 42px;
+            padding-left: 15px;
+            border-radius: 42px;
+            border: 2px solid #324b4e;
+            background: #F9F0DA;
+            outline: none;
+            position: relative;
+            transition: .3s linear;
+            }
+            .d7 input:focus {
+            width: 300px;
+            }
+            .d7 button {
+            width: 0px;
+            height: 0px;
+            position: absolute;
+            top: -1.5em;
+            right: 0;
+            }
+            .d7 button:before{
+            content: "\f002";
+            font-family: FontAwesome;
+            color: #31373e;
+            }
         </style>
     </head>
     <body>
@@ -24,13 +56,18 @@
                     height="50"></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <div class="d7"style='position: absolute; left: 30%;'>
+                        <form>
+                          <input type="text" placeholder="Искать здесь...">
+                          <button type="submit"><img src="/media/media/search (1).png"width="30" height="30"></button>
+                        </form>
+                    </div>
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item active">
                             <a class="nav-link" href="#!"><img src="/media/media/pngegg.png" height="60" width="60">
                                 <span class="sr-only">(current)</span>
                             </a>
                         </li>
-                        
                     </ul>
                 </div>
             </div>
@@ -40,15 +77,16 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="list-group" style="position: absolute; top: 2%;">
-                        <a class="list-group-item" href="{% url 'notebook.html' %}" style="font-family:Lobster, cursive; color: #31373e; background-color: rgba(255, 255, 255, 0.8);"><font size="5">Персональные компьютеры </font><img src="/media/media/computer_pc_PNG102095.png" width="50" 
+                        <a class="list-group-item" href="#!" style="font-family:Lobster, cursive; color: #31373e; background-color: rgba(255, 255, 255, 0.8);"><font size="5">Персональные компьютеры </font><img src="/media/media/computer_pc_PNG102095.png" width="50" 
                             height="50"></a>
-                        <a class="list-group-item" href="{% url 'smartphones.html' %}" style="font-family:Lobster, cursive; color: #31373e; background-color: rgba(255, 255, 255, 0.8);"><font size="5">Смартфоны и гаджеты </font><img src="/media/media/kisspng-iphone-8-iphone-x-iphone-4-smartphone-t-mobile-iphone-x-mobile-phone-5a6c329a5f8128.8634222215170402823912.png" width="50" 
+                        <a class="list-group-item" href="#!" style="font-family:Lobster, cursive; color: #31373e; background-color: rgba(255, 255, 255, 0.8);"><font size="5">Смартфоны и гаджеты </font><img src="/media/media/kisspng-iphone-8-iphone-x-iphone-4-smartphone-t-mobile-iphone-x-mobile-phone-5a6c329a5f8128.8634222215170402823912.png" width="50" 
                             height="50"></a>
-                        <a class="list-group-item" href="{% url 'tv.html' %}" style="font-family:Lobster, cursive; color: #31373e; background-color: rgba(255, 255, 255, 0.8);"><font size="5">Телевизоры и проекторы </font><img src="/media/media/tv_PNG39276.png" width="50" 
+                        <a class="list-group-item" href="#!" style="font-family:Lobster, cursive; color: #31373e; background-color: rgba(255, 255, 255, 0.8);"><font size="5">Телевизоры и проекторы </font><img src="/media/media/tv_PNG39276.png" width="50" 
                             height="50"></a>
                     </div>
                 </div>
                 <div class="col-lg-9">
+                    {% block content %}
                     <div class="carousel slide my-4" id="carouselExampleIndicators" data-ride="carousel">
                         <ol class="carousel-indicators">
                             <li class="active" data-target="#carouselExampleIndicators" data-slide-to="0"></li>
@@ -137,6 +175,7 @@
                             </div>
                         </div>
                     </div>
+                    {% endblock content %}
                 </div>
             </div>
         </div>
