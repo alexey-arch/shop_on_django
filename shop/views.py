@@ -10,12 +10,16 @@ def index(request):
     smartphone = Smartphones.objects.all()[0]
     acer_nitro_rgn = Laptops.objects.all()[1]
     oledlg = Tv.objects.all()[0]
+    pc_acer_nitro = Pc.objects.all()[0]
+    table_samsung = Tablet.objects.all()[0]
 
     return render(request, 'base.html', {
         'product': laptops,
         'smartphone': smartphone,
         'acer_nitro_rgn': acer_nitro_rgn,
-        'oled_lg': oledlg
+        'oled_lg': oledlg,
+        'pc_acer_nitro': pc_acer_nitro,
+        'table_samsung': table_samsung
     })
 
 class ProductDetailViews(DetailView):

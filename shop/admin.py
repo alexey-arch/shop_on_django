@@ -4,6 +4,9 @@ from django.forms import ModelChoiceField, ModelForm, ValidationError
 from PIL import Image
 
 class SmartphonesAdminFrom(ModelForm):
+    """
+    Параметры загрузки фото
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['image'].help_text = 'Минимальное разрешение {}x{}px'.format(*Product.MIN_RESOLUTION)
@@ -44,6 +47,9 @@ class SmartphonesAdmin(admin.ModelAdmin):
 
 
 class LaptopsAdminFrom(ModelForm):
+    """
+    Параметры загрузки фото
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['image'].help_text = 'Минимальное разрешение {}x{}px'.format(*Product.MIN_RESOLUTION)
@@ -66,7 +72,6 @@ class LaptopsAdminFrom(ModelForm):
         return self.cleaned_data['image']
 
 
-
 class LaptopsAdmin(admin.ModelAdmin):
     """
     Поиск Ноутбуков
@@ -83,6 +88,33 @@ class LaptopsAdmin(admin.ModelAdmin):
             return ModelChoiceField(Category.objects.filter(slug='laptops'), label='Категория') 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
+
+class PcAdminFrom(ModelForm):
+    """
+    Параметры загрузки фото
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['image'].help_text = 'Минимальное разрешение {}x{}px'.format(*Product.MIN_RESOLUTION)
+
+    def clean_image(self):
+        image = Image.open(self.cleaned_data['image'])
+        
+        min_height, min_width = Product.MIN_RESOLUTION
+        max_height, max_width = Product.MAX_RESOLUTION
+
+        if self.cleaned_data['image'].size > Product.MAX_IMAGE_SIZE:
+            raise ValidationError('Размер изображения превышает 3 МБ!')
+
+        if image.height < min_height or image.width < min_width:
+            raise ValidationError('Разрешение изображения меньше минимального!')
+        
+        if image.height > max_height or image.width > max_width:
+            raise ValidationError('Разрешение изображения больше максимального!')
+        
+        return self.cleaned_data['image']
+
+
 class PcAdmin(admin.ModelAdmin):
     """
     Поиск Компьютеров
@@ -90,11 +122,40 @@ class PcAdmin(admin.ModelAdmin):
     list_display = ("title", "category", 'price')
     list_display_links = ('title', 'price')
     search_fields = ('title', 'price')
+
+    form = PcAdminFrom
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         print(db_field)
         if db_field.name == 'category':
             return ModelChoiceField(Category.objects.filter(slug='pc'), label='Категория') 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+class TableAdminFrom(ModelForm):
+    """
+    Параметры загрузки фото
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['image'].help_text = 'Минимальное разрешение {}x{}px'.format(*Product.MIN_RESOLUTION)
+
+    def clean_image(self):
+        image = Image.open(self.cleaned_data['image'])
+        
+        min_height, min_width = Product.MIN_RESOLUTION
+        max_height, max_width = Product.MAX_RESOLUTION
+
+        if self.cleaned_data['image'].size > Product.MAX_IMAGE_SIZE:
+            raise ValidationError('Размер изображения превышает 3 МБ!')
+
+        if image.height < min_height or image.width < min_width:
+            raise ValidationError('Разрешение изображения меньше минимального!')
+        
+        if image.height > max_height or image.width > max_width:
+            raise ValidationError('Разрешение изображения больше максимального!')
+        
+        return self.cleaned_data['image']
 
 
 class TabletAdmin(admin.ModelAdmin):
@@ -104,11 +165,41 @@ class TabletAdmin(admin.ModelAdmin):
     list_display = ("title", "category", 'price')
     list_display_links = ('title', 'price')
     search_fields = ('title', 'price')
+
+    form = TableAdminFrom
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         print(db_field)
         if db_field.name == 'category':
             return ModelChoiceField(Category.objects.filter(slug='tables'), label='Категория') 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+class TvAdminFrom(ModelForm):
+    """
+    Параметры загрузки фото
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['image'].help_text = 'Минимальное разрешение {}x{}px'.format(*Product.MIN_RESOLUTION)
+
+    def clean_image(self):
+        image = Image.open(self.cleaned_data['image'])
+        
+        min_height, min_width = Product.MIN_RESOLUTION
+        max_height, max_width = Product.MAX_RESOLUTION
+
+        if self.cleaned_data['image'].size > Product.MAX_IMAGE_SIZE:
+            raise ValidationError('Размер изображения превышает 3 МБ!')
+
+        if image.height < min_height or image.width < min_width:
+            raise ValidationError('Разрешение изображения меньше минимального!')
+        
+        if image.height > max_height or image.width > max_width:
+            raise ValidationError('Разрешение изображения больше максимального!')
+        
+        return self.cleaned_data['image']
+
 
 class TvAdmin(admin.ModelAdmin):
     """
@@ -117,11 +208,41 @@ class TvAdmin(admin.ModelAdmin):
     list_display = ("title", "category", 'price')
     list_display_links = ('title', 'price')
     search_fields = ('title', 'price')
+
+    form = TvAdminFrom
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         print(db_field)
         if db_field.name == 'category':
             return ModelChoiceField(Category.objects.filter(slug='tv'), label='Категория') 
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+class ProjectorAdminFrom(ModelForm):
+    """
+    Параметры загрузки фото
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['image'].help_text = 'Минимальное разрешение {}x{}px'.format(*Product.MIN_RESOLUTION)
+
+    def clean_image(self):
+        image = Image.open(self.cleaned_data['image'])
+        
+        min_height, min_width = Product.MIN_RESOLUTION
+        max_height, max_width = Product.MAX_RESOLUTION
+
+        if self.cleaned_data['image'].size > Product.MAX_IMAGE_SIZE:
+            raise ValidationError('Размер изображения превышает 3 МБ!')
+
+        if image.height < min_height or image.width < min_width:
+            raise ValidationError('Разрешение изображения меньше минимального!')
+        
+        if image.height > max_height or image.width > max_width:
+            raise ValidationError('Разрешение изображения больше максимального!')
+        
+        return self.cleaned_data['image']
+
 
 class ProjectorAdmin(admin.ModelAdmin):
     """
@@ -130,6 +251,9 @@ class ProjectorAdmin(admin.ModelAdmin):
     list_display = ("title", "category", 'price')
     list_display_links = ('title', 'price')
     search_fields = ('title', 'price')
+
+    form = ProjectorAdminFrom
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         print(db_field)
         if db_field.name == 'category':
