@@ -5,9 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Shop Homepage - Start Bootstrap Template</title>
+        <title>Техно-Ёж SHOP</title>
         <!-- Favicon-->
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+        <link rel="icon" href="/media/media/hedgehog.png" type="image/x-icon">
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -35,11 +35,13 @@
             width: 300px;
             }
             .d7 button {
-            width: 0px;
-            height: 0px;
+            width: 42px;
+            height: 42px;
+            background: none;
+            border: none;
             position: absolute;
-            top: -1.5em;
-            right: 0;
+            top: -2px;
+            right: -1;
             }
             .d7 button:before{
             content: "\f002";
@@ -56,15 +58,15 @@
                     height="50"></a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <div class="d7"style='position: absolute; left: 30%;'>
-                        <form>
-                          <input type="text" placeholder="Искать здесь...">
-                          <button type="submit"><img src="/media/media/search (1).png"width="30" height="30"></button>
+                    <div class="d7"style='position: absolute; left: 30%;' >
+                        <form class="form_search" action="{% url 'index' %}">
+                          <input type="text" placeholder="Искать здесь..." name="search">
+                          <button type="submit"><img src="/media/media/search (1).png" width="30" height="30" style="margin-top: 0; margin-left: -19px; position: absolute;"></button>
                         </form>
                     </div>
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item active">
-                            <a class="nav-link" href="#!"><img src="/media/media/pngegg.png" height="60" width="60">
+                            <a class="nav-link" href="{% url 'cart' %}"><img src="/media/media/pngegg.png" height="60" width="60">
                                 <span class="sr-only">(current)</span>
                             </a>
                         </li>
@@ -77,12 +79,9 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="list-group" style="position: absolute; top: 2%;">
-                        <a class="list-group-item" href="#!" style="font-family:Lobster, cursive; color: #31373e; background-color: rgba(255, 255, 255, 0.8);"><font size="5">Персональные компьютеры </font><img src="/media/media/computer_pc_PNG102095.png" width="50" 
-                            height="50"></a>
-                        <a class="list-group-item" href="#!" style="font-family:Lobster, cursive; color: #31373e; background-color: rgba(255, 255, 255, 0.8);"><font size="5">Смартфоны и гаджеты </font><img src="/media/media/kisspng-iphone-8-iphone-x-iphone-4-smartphone-t-mobile-iphone-x-mobile-phone-5a6c329a5f8128.8634222215170402823912.png" width="50" 
-                            height="50"></a>
-                        <a class="list-group-item" href="#!" style="font-family:Lobster, cursive; color: #31373e; background-color: rgba(255, 255, 255, 0.8);"><font size="5">Телевизоры и проекторы </font><img src="/media/media/tv_PNG39276.png" width="50" 
-                            height="50"></a>
+                        {% for category in categories %}
+                            <a class="list-group-item" style="background-color: rgba(255, 255, 255, 0.8);font-family:Lobster, cursive; color: #31373e;" href="{{ category.url }}">{{ category.name }} ({{ category.count }})</a>
+                        {% endfor %}
                     </div>
                 </div>
                 <div class="col-lg-9">
@@ -107,73 +106,20 @@
                             <span class="sr-only">Next</span>
                         </a>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100" style="background-color: rgba(255, 255, 255, 0.8);">
-                                <a href="/products/notebook/laptops/"><img class="card-img-top" src="/media/{{ product.image }}" alt="..." /></a>
-                                <div class="card-body">
-                                    <h4 class="card-title"><a href="#!" style="font-family:Lobster, cursive; color: #31373e;">{{ product.title }}</a></h4>
-                                    <h5>{{ product.price }}тг.</h5>
-                                    <p>{{ product.category }}</p>
-                                </div>
-                                <div class="card-footer"><small class="text-muted">★ ★ ★ ★ ☆</small></div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100" style="background-color: rgba(255, 255, 255, 0.8);">
-                                <a href="/products/smartphone/smartphones/"><img class="card-img-top" src="/media/{{ smartphone.image }}" alt="..." /></a>
-                                <div class="card-body">
-                                    <h4 class="card-title"><a href="#!" style="font-family:Lobster, cursive; color: #31373e;">{{ smartphone.title }}</a></h4>
-                                    <h5>{{ smartphone.price }}</h5>
-                                    <p>{{ smartphone.category }}</p>
-                                </div>
-                                <div class="card-footer"><small class="text-muted">★ ★ ★ ★ ☆</small></div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100" style="background-color: rgba(255, 255, 255, 0.8);">
-                                <a href="/products/notebook/laptop/"><img class="card-img-top" src="/media/{{ acer_nitro_rgn.image }}" alt="..." /></a>
-                                <div class="card-body">
-                                    <h4 class="card-title"><a href="#!" style="font-family:Lobster, cursive; color: #31373e;">{{ acer_nitro_rgn.title }}</a></h4>
-                                    <h5>{{ acer_nitro_rgn.price }}тг.</h5>
-                                    <p class="card-text">{{ acer_nitro_rgn.category }}</p>
-                                </div>
-                                <div class="card-footer"><small class="text-muted">★ ★ ★ ★ ☆</small></div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100" style="background-color: rgba(255, 255, 255, 0.8);">
-                                <a href="/products/tv/oled_lg/"><img class="card-img-top" src="/media/{{ oled_lg.image }}" alt="..." /></a>
-                                <div class="card-body">
-                                    <h4 class="card-title"><a href="#!"style="font-family:Lobster, cursive; color: #31373e;">{{ oled_lg.title }}</a></h4>
-                                    <h5>{{ oled_lg.price }}тг.</h5>
-                                    <p class="card-text">{{ oled_lg.category }}</p>
-                                </div>
-                                <div class="card-footer"><small class="text-muted">★ ★ ★ ★ ☆</small></div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100" style="background-color: rgba(255, 255, 255, 0.8);">
-                                <a href="/products/pc/ACERNITRON50-600/"><img class="card-img-top" src="/media/{{ pc_acer_nitro.image }}" alt="..." /></a>
-                                <div class="card-body">
-                                    <h4 class="card-title"><a href="#!"style="font-family:Lobster, cursive; color: #31373e;">{{pc_acer_nitro.title}}</a></h4>
-                                    <h5>{{pc_acer_nitro.price}}тг.</h5>
-                                    <p class="card-text">{{ pc_acer_nitro.category }}</p>
-                                </div>
-                                <div class="card-footer"><small class="text-muted">★ ★ ★ ★ ☆</small></div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 mb-4">
-                            <div class="card h-100" style="background-color: rgba(255, 255, 255, 0.8);">
-                                <a href="/products/tables/SAMSUNGGALAXYTABA10/"><img class="card-img-top" src="/media/{{ table_samsung.image }}" alt="..." /></a>
-                                <div class="card-body">
-                                    <h4 class="card-title"><a href="#!"style="font-family:Lobster, cursive; color: #31373e;">{{ table_samsung.title }}</a></h4>
-                                    <h5>{{ table_samsung.price }}тг.</h5>
-                                    <p class="card-text">{{ table_samsung.category }}</p>
-                                </div>
-                                <div class="card-footer"><small class="text-muted">★ ★ ★ ★ ☆</small></div>
-                            </div>
-                        </div>
+                    <div class="row" >
+                        {% for product in products %}
+                            <div class="col-lg-4 col-md-6 mb-4">                                    
+                                <div class="card h-100"style="background-color: rgba(255, 255, 255, 0.8);">
+                                    <div  class = " card-body ">
+                                        <a href="{{ product.get_url }}"><img class="card-img-top" src="{{ product.image.url }}" alt="..."></a>
+                                        <div class="card-body" style = >
+                                            <h4 class="card-title"><a style="font-family:Lobster, cursive; color: rgb(49, 55, 62)" href="{{ product.get_url }}">{{ product.title }} </a></h4>
+                                            <h5>{{ product.price }} Тг.</h5>
+                                        </div>
+                                    </div>
+                                </div>    
+                            </div>   
+                        {% endfor %}
                     </div>
                     {% endblock content %}
                 </div>

@@ -13,12 +13,41 @@ def get_product_url(obj, viewname ):
     ct_model = obj.__class__._meta.model_name
     return reverse(viewname, kwargs={'ct_model': ct_model, 'slug': obj.slug})
 
+
+class CategoryManager(models.Manager):
+
+    CATEGORY_NAME_COUNT_NAME = {
+        'Ноутбуки': 'laptops__count',
+        'Смартфоны': 'smartphones__count',
+        'Планшеты': 'tablet__count',
+        'Системные блоки': 'pc__count',
+        'Телевизоры': 'tv__count',
+        'Проекторы и экраны': 'projector__count',
+    }
+    
+    def get_queryset(self):
+        return super().get_queryset()
+
+    def get_models_for_count(self, *model_names):
+        return [models.Count(model_name) for model_name in model_names]
+
+    def get_categories_for_left_sidebar(self):
+        models = self.get_models_for_count('laptops', 'smartphones','tablet', 'pc', 'tv', 'projector')
+        qs = list(self.get_queryset().annotate(*models))
+        data = [
+            dict(name=c.name, url=c.get_url(), count=getattr(c, self.CATEGORY_NAME_COUNT_NAME[c.name]))
+            for c in qs
+        ]
+        return data
+
+
 class Main_Category(models.Model):
     """
     Модель Главная категория
     """
     name = models.CharField(max_length=250, unique=True, verbose_name='Название')
     slug = models.SlugField(max_length=100, unique=True)
+    objects = CategoryManager()
 
     class Meta:
         verbose_name = 'Главная категория'
@@ -27,6 +56,7 @@ class Main_Category(models.Model):
     def __str__(self):
         return self.name
 
+
 class Category(models.Model):
     """
     Модель Категория
@@ -34,6 +64,7 @@ class Category(models.Model):
     category = models.ForeignKey(Main_Category, null=True, verbose_name='Категория', on_delete=models.CASCADE)
     name = models.CharField(max_length=250, unique=True, verbose_name='Название')
     slug = models.SlugField(max_length=100, unique=True)
+    objects = CategoryManager()
 
     class Meta:
         verbose_name = 'категория'
@@ -41,6 +72,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_url(self):
+        return reverse('category_detail', kwargs={'slug': self.slug})
 
 
 class Product(models.Model):
@@ -73,6 +107,9 @@ class Product(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
+    
+    def get_url(self):
+        return get_product_url(self, 'product_detail')
 
 
 class Smartphones(Product):
@@ -200,6 +237,10 @@ class Projector(Product):
     min_projection_distance = models.DecimalField(max_digits=3, decimal_places=0, verbose_name='Минимальное проекционное расстояние')  
     features = models.CharField(max_length=200, verbose_name='Особености')
 
+    def __str__(self):
+        return self.title
+
+
 
 class Cart(models.Model):
     class Meta:
@@ -214,7 +255,7 @@ class Cart(models.Model):
     final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Цена')
 
     def __str__(self):
-        return 'Корзина №%d' % self.id    
+        return str(self.id)    
 
 
 class CartProduct(models.Model):
@@ -228,12 +269,13 @@ class CartProduct(models.Model):
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
-    quantity = models.PositiveIntegerField(default=1)
+    quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Цена', default=0)
 
 
     def __str__(self):
-        return 'Продукт %s из корзины %d' % (self.content_object.title, self.cart.id)
+        return "Продукт: {} (для корзины)".format(self.content_object.title)
+
 
 
 class Customer(models.Model):

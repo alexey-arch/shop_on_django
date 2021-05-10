@@ -1,32 +1,24 @@
 from django.shortcuts import render
-from django.http import HttpResponse
-from django.views.generic import DetailView
+from django.http import HttpResponseRedirect
+from django.views.generic import DetailView, View
 from .models import *
+from .mixins import CategoryDetailMixin
+
+class IndexView(View):
+    def get(self, request, *args, **kwargs):
+
+        context = {
+            'categories': Category.objects.get_categories_for_left_sidebar(), 
+            'products': LatestProducts.objects.get_products_for_main_page('tables', 'laptops', 'smartphones', 'pc', 'tv', 'projectors', with_respect_to='notebook'),
+        }
+        return render(request, 'base.html', context)
 
 
-
-def index(request):
-    laptops = Laptops.objects.all()[0]
-    smartphone = Smartphones.objects.all()[0]
-    acer_nitro_rgn = Laptops.objects.all()[1]
-    oledlg = Tv.objects.all()[0]
-    pc_acer_nitro = Pc.objects.all()[0]
-    table_samsung = Tablet.objects.all()[0]
-
-    return render(request, 'base.html', {
-        'product': laptops,
-        'smartphone': smartphone,
-        'acer_nitro_rgn': acer_nitro_rgn,
-        'oled_lg': oledlg,
-        'pc_acer_nitro': pc_acer_nitro,
-        'table_samsung': table_samsung
-    })
-
-class ProductDetailViews(DetailView):
+class ProductDetailViews(CategoryDetailMixin, DetailView):
     CT_MODEL_MODEL_CLASS = {
-        'notebook': Laptops,
-        'smartphone': Smartphones,
-        'tables': Tablet,
+        'laptops': Laptops,
+        'smartphones': Smartphones,
+        'tablet': Tablet,
         'pc': Pc,
         'tv': Tv,
         'projector': Projector
@@ -40,3 +32,31 @@ class ProductDetailViews(DetailView):
     context_object_name = 'product'
     template_name = 'product_detail.html'
     slug_url_kwarg = 'slug'
+
+
+class CategoryDetailView(CategoryDetailMixin, DetailView):
+
+    model = Category
+    queryset = Category.objects.all()
+    context_object_name = 'category'
+    template_name = 'category_detail.html'
+    slug_url_kwarg = 'slug'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
+class CartViews(View):
+    
+    def get(self, request, *args, **kwargs):
+        customer = Customer.objects.get(user=request.user)
+        cart = Cart.objects.get(owner=customer)
+        categories = Category.objects.get_categories_for_left_sidebar()
+        context = {
+            'cart': cart,
+            'categories': categories
+        }
+        
+        return render(request, 'cart.html', context)
+

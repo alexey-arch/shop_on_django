@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="box" style="background-color: rgba(255, 255, 255, 0.8); ">
+        <h3 style="font-family:Lobster, cursive; color: rgb(49, 55, 62); margin-left: 8px;">Корзина {% if not cart.products.count %}пуста{% endif %}</h3>
+        <table class="table">
+            <thead>
+                <tr style="margin-left: 2px;">
+                    <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Название</th>
+                    <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Изображение</th>
+                    <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Цена</th>
+                    <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Количество</th>
+                        <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Общая цена</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart.products.all %}
+                    <tr>   
+                        <th class="row"style="font-family:Lobster, cursive; color: rgb(49, 55, 62); margin-left: 2px;">{{ item.content_object.title }}</th>
+                        <td class="img-12"><img src="{{ item.content_object.image.url }}" class="img-15"></td>
+                        <td>{{ item.content_object.price }}Тг.</td>
+                        <td>{{ item.quantity }}</td>
+                            <td>{{ item.content_object.final_price }}Тг.</td>
+                    </tr>
+                    
+                {% endfor %}
+                
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}
