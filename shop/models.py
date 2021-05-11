@@ -252,10 +252,14 @@ class Cart(models.Model):
     total_products = models.PositiveIntegerField(default=0)
     in_order = models.BooleanField(default=False)
     for_anonymoys_user= models.BooleanField(verbose_name = 'сделать заказ анонимно', default=False)
-    final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Цена')
+    final_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Цена', default=0)
 
     def __str__(self):
-        return str(self.id)    
+        return str(self.id)  
+
+    def save(self, *args, **kwargs):
+        cart_data = self.products.aggregate(models.Sum('price'), models.Count('id'))
+        super().save(*args, **kwargs)
 
 
 class CartProduct(models.Model):
@@ -265,17 +269,18 @@ class CartProduct(models.Model):
 
     user = models.ForeignKey('Customer', verbose_name='Покупатель', on_delete=models.CASCADE)
     cart_fk = models.ForeignKey('Cart', verbose_name='Корзина', on_delete=models.CASCADE)
-
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
     quantity = models.PositiveIntegerField(default=1, verbose_name='Количество')
     price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Цена', default=0)
 
-
     def __str__(self):
         return "Продукт: {} (для корзины)".format(self.content_object.title)
 
+    def save(self, *args, **kwargs):
+        self.price = self.quantity * self.content_object.price
+        super().save(*args, **kwargs)
 
 
 class Customer(models.Model):
