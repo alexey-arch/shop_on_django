@@ -1,44 +1,84 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    <STYle>
+        .button7 {
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            padding: .8em 1em calc(.8em + 3px);
+            border-radius: 3px;
+            background: rgb(49, 55, 62);
+            box-shadow: 0 -3px #042447 inset;
+            transition: 0.2s;
+        } 
+        .button7:hover { background: #042447 }
+        .button7:active {
+            background: #042447;
+            box-shadow: 0 3px #042447;
+        }
+    </STYle>
 
-<nav aria-label="breadcrumb" class="mt-3">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
-        <li class="breadcrumb-item"aria-current="page">{{ 'Корзина' }}</li>
-    </ol>
-</nav>
+    <nav aria-label="breadcrumb" class="mt-3" style="margin-left: -35px; margin-right: -95px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+            <li class="breadcrumb-item"aria-current="page">{{ 'Корзина' }}</li>
+        </ol>
+    </nav>
 
-<div class="box" style="background-color: rgba(255, 255, 255, 0.8); margin-top: 2%;">
-    <h3 class="text-center mt-5 mb-5"style="font-family:Lobster, cursive; color: rgb(49, 55, 62); margin-left: 8px;">Корзина {% if not cart.products.count %}пуста{% endif %}</h3>
-    <table class="table">
-        <thead>
-            <tr style="margin-left: 2px;">
-                <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Название</th>
-                <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Изображение</th>
-                <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Цена</th>
-                <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Количество</th>
-                    <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Общая цена</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in cart.products.all %}
-                <tr>   
-                    <th class="row"style="font-family:Lobster, cursive; color: rgb(49, 55, 62); margin-left: 2px;">{{ product.content_object.title }}</th>
-                    <td class="img-12"><img src="{{ product.content_object.image.url }}" class="img-15"></td>
-                    <td>{{ product.content_object.price }}Тг.</td>
-                    <td>{{ product.quantity }}</td>
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>{{ message }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="box" style="background-color: rgba(255, 255, 255, 0.8); margin-left: -35px;width:116%;">
+        <h3 class="text-center mt-5 mb-5"style="font-family:Lobster, cursive; color: rgb(49, 55, 62);">Корзина {% if not cart.products.count %}пуста{% endif %}</h3>
+            <table class="table">
+                <thead class="thead"style="width: 80%;">
+                    <tr style="margin-left: 2px;">
+                        <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Название</th>
+                        <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Изображение</th>
+                        <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Цена</th>
+                        <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Количество</th>
+                            <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Общая цена</th>
+                        <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Действие</th>
+                    </tr>
+                    {% for product in cart.products.all %}
+                    <tr>   
+                        <th class="row"style="font-family:Lobster, cursive; color: rgb(49, 55, 62); margin-left: 2px;">{{ product.content_object.title }}</th>
+                        <td class="w-25">
+                            <img class="img-fluid" src="{{ product.content_object.image.url }}" alt="">
+                        </td>
                         <td>{{ product.content_object.price }}Тг.</td>
-                </tr>
-            {% endfor %}
-            <tr>
-                <td colspan="2"></td>
-                <th scope="row">Итого:</th>
-                <td>{{ cart.total_products }}</td>
-                <td>{{ cart.final_price }} тнг.</td>
-            </tr>
-                
-        </tbody>
-    </table>
-</div>
+                        <td>
+                            <form action="{% url 'change_quantity' ct_model=product.content_object.get_model_name slug=product.content_object.slug %}" method="POST">
+                                {% csrf_token %}
+                                <input type="number" class="form-control" name="qty" min="1" value="{{product.quantity}}">
+                                <br>
+                                <input type="submit" class="button7" value="Изменить ">
+                            </form>
+                        </td>
+                        <td>{{ product.content_object.price }}Тг.</td>
+                        <td>
+                            <a href="{% url 'delete_from_cart' ct_model=product.content_object.get_model_name slug=product.content_object.slug %}" class="button7">Удалить</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <td colspan="2"></td>
+                        <th scope="row">Итого:</th>
+                        <td>{{ cart.total_products }}</td>
+                        <td><strong>{{ cart.final_price }}Тг.</strong></td>
+                        <td><a href="{% url 'checkout' %}"class="button7">Оплатить</a></td>
+                        
+                    </tr>                
+                </thead>
+            </table>
+    </div>
 {% endblock content %}

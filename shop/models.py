@@ -111,6 +111,9 @@ class Product(models.Model):
     def get_url(self):
         return get_product_url(self, 'product_detail')
 
+    def get_model_name(self):
+        return self.__class__._meta.model_name.lower()
+
 
 class Smartphones(Product):
     """
@@ -247,7 +250,7 @@ class Cart(models.Model):
         verbose_name = 'корзина'
         verbose_name_plural = 'Корзины'
 
-    owner = models.ForeignKey('Customer', verbose_name='Покупатель', on_delete=models.CASCADE, null=True, blank = True)
+    owner = models.ForeignKey('Customer', verbose_name='Покупатель', on_delete=models.CASCADE, null=True)
     products = models.ManyToManyField('CartProduct', blank=True)
     total_products = models.PositiveIntegerField(default=0)
     in_order = models.BooleanField(default=False)
@@ -256,10 +259,6 @@ class Cart(models.Model):
 
     def __str__(self):
         return str(self.id)  
-
-    def save(self, *args, **kwargs):
-        cart_data = self.products.aggregate(models.Sum('price'), models.Count('id'))
-        super().save(*args, **kwargs)
 
 
 class CartProduct(models.Model):

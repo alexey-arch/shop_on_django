@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<STYle>
+    .button7 {
+        font-weight: 700;
+        color: white;
+        text-decoration: none;
+        padding: .8em 1em calc(.8em + 3px);
+        border-radius: 3px;
+        background: rgb(49, 55, 62);
+        box-shadow: 0 -3px #042447 inset;
+        transition: 0.2s;
+    } 
+    .button7:hover { background: #042447 }
+    .button7:active {
+        background: #042447;
+        box-shadow: 0 3px #042447;
+    }
+</STYle>
+<div class="box" style="background-color: rgba(255, 255, 255, 0.8); margin-left: -35px;width:116%;">
+    <h3 class="text-center mt-5 mb-5"style="font-family:Lobster, cursive; color: rgb(49, 55, 62);">Оформление заказа</h3>
+    <table class="table">
+        <thead class="thead"style="width: 80%;">
+            <tr style="margin-left: 2px;">
+                <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Название</th>
+                <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Изображение</th>
+                <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Цена</th>
+                <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Количество</th>
+                    <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Общая цена</th>
+                <th scope="col"style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">Действие</th>
+            </tr>
+            {% for product in cart.products.all %}
+                <tr>   
+                    <th class="row"style="font-family:Lobster, cursive; color: rgb(49, 55, 62); margin-left: 2px;">{{ product.content_object.title }}</th>
+                    <td class="w-25">
+                        <img class="img-fluid" src="{{ product.content_object.image.url }}" alt="">
+                    </td>
+                    <td>{{ product.content_object.price }}Тг.</td>
+                    <td>
+                        <form action="{% url 'change_quantity' ct_model=product.content_object.get_model_name slug=product.content_object.slug %}" method="POST">
+                            {% csrf_token %}
+                            <input type="number" class="form-control" name="qty" min="1" value="{{product.quantity}}">
+                            <br>
+                            <input type="submit" class="btn-primary" value="Изменить ">
+                        </form>
+                    </td>
+                    <td>{{ product.content_object.price }}Тг.</td>
+                    <td>
+                        <a href="{% url 'delete_from_cart' ct_model=product.content_object.get_model_name slug=product.content_object.slug %}" class="button7">Удалить</a>
+                    </td>
+                </tr>
+            {% endfor %}
+                <tr>
+                    <td colspan="2"></td>
+                    <th>Итого:</th>
+                    <td>{{ cart.total_products }}</td>
+                    <td><strong>{{ cart.final_price }}Тг.</strong></td>
+                </tr>                
+        </thead>
+    </table>
+    <hr>
+    <h3 class="text-center mt-5 mb-5"style="font-family:Lobster, cursive; color: rgb(49, 55, 62);">Форма заказа</h3>
+    <form action="{% url 'make_order' %}" method="POST" style="margin-left: 5px; width: 99%;">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" class="button7 btn-block md-3" value="Оформить заказ">
+    </form>
+</div>
+
+
+{% endblock content %}
