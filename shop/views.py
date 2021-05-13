@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.http import HttpResponseRedirect
@@ -8,11 +9,12 @@ from .mixins import CategoryDetailMixin, CartMixin
 from django.contrib import messages
 from .forms import OrderForms
 from .utils import recalc_cart
+from itertools import chain
 
 class IndexView(CartMixin, View):
     def get(self, request, *args, **kwargs):
+        
         customer = Customer.objects.get(user=request.user)
-        # cart = Cart.objects.get(owner=customer)
         context = {
             'categories': Category.objects.get_categories_for_left_sidebar(), 
             'products': LatestProducts.objects.get_products_for_main_page('tables', 'laptops', 'smartphones', 'pc', 'tv', 'projectors', with_respect_to='notebook'),
@@ -35,6 +37,7 @@ class ProductDetailViews(CartMixin, CategoryDetailMixin, DetailView):
         self.model = self.CT_MODEL_MODEL_CLASS[kwargs['ct_model']]
         self.queryset = self.model._base_manager.all()
         return super().dispatch(request, *args, **kwargs)
+
 
     context_object_name = 'product'
     template_name = 'product_detail.html'
@@ -162,3 +165,43 @@ class MakeOrderView(CartMixin, View):
             return HttpResponseRedirect('/')
 
         return HttpResponseRedirect('/checkout/')
+
+
+class SearchView(CartMixin, CategoryDetailMixin, View):
+    
+    def get(self, request, *args, **kwargs):
+        
+        categories = Category.objects.get_categories_for_left_sidebar()
+
+        search_query = request.GET.get('search')
+        
+        context = {}
+        if search_query:
+            query_sets = []
+
+            query_sets.append(Smartphones.objects.search(query=search_query))
+            query_sets.append(Laptops.objects.search(query=search_query))
+            query_sets.append(Pc.objects.search(query=search_query))
+            query_sets.append(Tv.objects.search(query=search_query))
+            query_sets.append(Tablet.objects.search(query=search_query))
+            query_sets.append(Projector.objects.search(query=search_query))
+
+            final_set = list(chain(*query_sets))
+            final_set.sort(key=lambda x: x.id, reverse=True)
+            
+            context['categories'] = categories
+            context['last_question'] =  search_query
+
+            current_page = Paginator(final_set,10)
+
+            page = request.GET.get('')
+            context['object_list'] = search_query
+            try:
+                context['object_list'] = current_page.page(page)
+            except PageNotAnInteger:
+                context['object_list'] = current_page.page(1)
+            except EmptyPage:
+                context['object_list'] = current_page.page(current_page.num_pages)
+        categories = Category.objects.get_categories_for_left_sidebar()
+        
+        return render(request, 'search.html', context)

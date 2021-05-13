@@ -59,8 +59,8 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <div class="d7"style='position: absolute; left: 30%;' >
-                        <form class="form_search" action="{% url 'index' %}">
-                          <input type="text" placeholder="Искать здесь..." name="search">
+                        <form class="form_search" action="{% url 'search' %}">
+                          <input placeholder="Искать здесь..." name="search" type="search" placeholder="Поиск" aria-label="Search">
                           <button type="submit"><img src="/media/media/search (1).png" width="30" height="30" style="margin-top: 0; margin-left: -19px; position: absolute;"></button>
                         </form>
                     </div>
@@ -114,7 +114,7 @@
                                         <a href="{{ product.get_url }}"><img class="card-img-top" src="{{ product.image.url }}" alt="..."></a>
                                         <div class="card-body" style = >
                                             <h4 class="card-title"><a style="font-family:Lobster, cursive; color: rgb(49, 55, 62)" href="{{ product.get_url }}">{{ product.title }} </a></h4>
-                                            <h5>{{ product.price }} Тг.</h5>
+                                            <h5 style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">{{ product.price }} Тг.</h5>
                                         </div>
                                     </div>
                                 </div>    

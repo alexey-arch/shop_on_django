@@ -11,5 +11,6 @@ urlpatterns = [
     path('change-quantity/<str:ct_model>/<str:slug>/', ChangeQuantityView.as_view(), name='change_quantity' ),
     path('checkout/', CheckoutView.as_view(), name='checkout'),
     path('make-order/', MakeOrderView.as_view(), name='make_order'),
+    path('search/', SearchView.as_view(), name='search'),
 
 ]

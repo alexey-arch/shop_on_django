@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <STYle>
+        .button7 {
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+            padding: .8em 1em calc(.8em + 3px);
+            border-radius: 3px;
+            background: rgb(49, 55, 62);
+            box-shadow: 0 -3px #042447 inset;
+            transition: 0.2s;
+        } 
+        .button7:hover { background: #042447 }
+        .button7:active {
+            background: #042447;
+            box-shadow: 0 3px #042447;
+        }
+    </STYle>
+    <nav aria-label="breadcrumb" class="mt-3" style="margin-left: -35px; margin-right: -95px;">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
+            <li class="breadcrumb-item"aria-current="page">{{ last_question }}</li>
+        </ol>
+    </nav>
+    
+<div class="box" style="background-color: rgba(255, 255, 255, 0.8); margin-left: -35px;width:116%;">
+    
+    <h3 class="text-center mt-5 mb-5"style="font-family:Lobster, cursive; color: rgb(49, 55, 62);">
+        Результат запроса "
+        <span class="searcn_ques" style="color: #081481;">
+            {{ last_question }}
+        </span>"
+    </h3>
+    {% if object_list %}
+    <div class="row">
+        {% for object in object_list %}
+            <div class="col-lg-4 col-md-6 mb-4">                                    
+                <div class="card h-100"style="background-color: rgba(255, 255, 255, 0.8);">
+                    <div  class = " card-body ">
+                        <a href="{{ object.get_url }}"><img class="card-img-top" src="{{ object.image.url }}" alt="..."></a>
+                        <div class="card-body" style = >
+                            <h4 class="card-title"><a style="font-family:Lobster, cursive; color: rgb(49, 55, 62)" href="{{ product.get_url }}">{{ object.title }} </a></h4>
+                            <h5 style="font-family:Lobster, cursive; color: rgb(49, 55, 62)">{{ object.price }} Тг.</h5>
+                        </div>
+                        {{object.content|safe}}
+                        <p><a class="button7" href="{{ object.get_url }}">Подробнее</a></p>
+                    </div>
+                </div>    
+            </div>   
+        {% endfor %}
+    </div>
+    {% else %}
+        <p>По вашему запросу не найдено результатов <br>Попробуйте повторить запрос с другой формулировкой</p>
+    {% endif %}
+</div>
+{% endblock content %}

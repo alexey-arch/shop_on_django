@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.db.models import Count
 from PIL import Image
 from django.urls import reverse
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -115,10 +116,23 @@ class Product(models.Model):
         return self.__class__._meta.model_name.lower()
 
 
+class SmartphonesManager(models.Manager):
+    use_for_related_fields = True
+ 
+    def search(self, query=None):
+        qs = self.get_queryset()
+        if query:
+            or_lookup = (Q(title__icontains=query) | Q(description__icontains=query))
+            qs = qs.filter(or_lookup)
+ 
+        return qs
+
+
 class Smartphones(Product):
     """
     Модель Смартфоны
     """
+    objects = SmartphonesManager()
     diagonal = models.CharField(max_length=200, verbose_name='Диагональ дисплея ')
     screen_resolution = models.CharField(max_length=200, verbose_name='Разрешение экрана')
     system = models.CharField(max_length=200, verbose_name='Операционная система')
@@ -136,10 +150,23 @@ class Smartphones(Product):
         return self.title
 
 
+class TabletManager(models.Manager):
+    use_for_related_fields = True
+ 
+    def search(self, query=None):
+        qs = self.get_queryset()
+        if query:
+            or_lookup = (Q(title__icontains=query) | Q(description__icontains=query))
+            qs = qs.filter(or_lookup)
+ 
+        return qs
+
+
 class Tablet(Product):
     """
     Модель Планшеты
     """
+    objects = TabletManager()
     diagonal = models.CharField(max_length=200, verbose_name='Диагональ дисплея ')
     screen_resolution = models.CharField(max_length=200, verbose_name='Разрешение экрана')
     system = models.CharField(max_length=200, verbose_name='Операционная система')
@@ -156,10 +183,23 @@ class Tablet(Product):
         return self.title
 
 
+class NotebookManager(models.Manager):
+    use_for_related_fields = True
+ 
+    def search(self, query=None):
+        qs = self.get_queryset()
+        if query:
+            or_lookup = (Q(title__icontains=query) | Q(description__icontains=query))
+            qs = qs.filter(or_lookup)
+ 
+        return qs
+
+
 class Laptops(Product):
     """
     Модель Планшеты
     """
+    objects = NotebookManager()
     class Meta:
         verbose_name = 'Ноутбук'
         verbose_name_plural = 'Ноутбуки'
@@ -182,10 +222,23 @@ class Laptops(Product):
         return self.title
 
 
+class PcManager(models.Manager):
+    use_for_related_fields = True
+ 
+    def search(self, query=None):
+        qs = self.get_queryset()
+        if query:
+            or_lookup = (Q(title__icontains=query) | Q(description__icontains=query))
+            qs = qs.filter(or_lookup)
+ 
+        return qs
+
+
 class Pc(Product):
     """
     Модель ПК
     """
+    objects = PcManager()
     cpu = models.CharField(max_length=200, verbose_name='Модель процессора')
     number_of_cores = models.DecimalField(max_digits=3, decimal_places=0, verbose_name='Количество ядер')
     frequency_cpu = models.CharField(max_length=200, verbose_name='Чистота процессора')
@@ -205,10 +258,23 @@ class Pc(Product):
         return self.title
 
 
+class TvManager(models.Manager):
+    use_for_related_fields = True
+ 
+    def search(self, query=None):
+        qs = self.get_queryset()
+        if query:
+            or_lookup = (Q(title__icontains=query) | Q(description__icontains=query))
+            qs = qs.filter(or_lookup)
+ 
+        return qs
+
+
 class Tv(Product):
     """
     Модель ТВ
     """
+    objects = TvManager()
     class Meta:
         verbose_name = 'Телевизор'
         verbose_name_plural = 'Телевизоры'
@@ -225,10 +291,23 @@ class Tv(Product):
         return self.title
 
 
+class ProjectorManager(models.Manager):
+    use_for_related_fields = True
+ 
+    def search(self, query=None):
+        qs = self.get_queryset()
+        if query:
+            or_lookup = (Q(title__icontains=query) | Q(description__icontains=query))
+            qs = qs.filter(or_lookup)
+ 
+        return qs
+
+
 class Projector(Product):
     """
     Модель Проекторы
     """
+    objects = ProjectorManager()
     class Meta:
         verbose_name = 'Проектор'
         verbose_name_plural = 'Проекторы'
