@@ -28,7 +28,7 @@
 
     {% if messages %}
         {% for message in messages %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert alert-success alert-dismissible fade show" role="alert"style="font-family:Lobster, cursive; color: rgb(49, 55, 62);">
             <strong>{{ message }}</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -38,7 +38,9 @@
     {% endif %}
 
     <div class="box" style="background-color: rgba(255, 255, 255, 0.8); margin-left: -35px;width:116%;">
-        <h3 class="text-center mt-5 mb-5"style="font-family:Lobster, cursive; color: rgb(49, 55, 62);">Корзина {% if not cart.products.count %}пуста{% endif %}</h3>
+        {% if not cart.products.count %}
+        <h1 class="text-center mt-5 mb-5"style="font-family:Lobster, cursive; color: rgb(49, 55, 62);"><br>Корзина {% if not cart.products.count %}пуста{% endif %}</h1><br>
+        {% else %}
             <table class="table">
                 <thead class="thead"style="width: 80%;">
                     <tr style="margin-left: 2px;">
@@ -75,10 +77,12 @@
                         <th scope="row">Итого:</th>
                         <td>{{ cart.total_products }}</td>
                         <td><strong>{{ cart.final_price }}Тг.</strong></td>
+                        <br>
                         <td><a href="{% url 'checkout' %}"class="button7">Оплатить</a></td>
                         
-                    </tr>                
+                    </tr>               
                 </thead>
             </table>
+        {% endif %}
     </div>
 {% endblock content %}

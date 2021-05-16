@@ -84,7 +84,6 @@ PRODUCT_SPEC = {
 def product_specifications(product):
     model_name = product.__class__._meta.model_name
 
-
     table_content = ''
 
     for name, value in PRODUCT_SPEC[model_name].items():

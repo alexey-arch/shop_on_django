@@ -13,8 +13,6 @@ from itertools import chain
 
 class IndexView(CartMixin, View):
     def get(self, request, *args, **kwargs):
-        
-        customer = Customer.objects.get(user=request.user)
         context = {
             'categories': Category.objects.get_categories_for_left_sidebar(), 
             'products': LatestProducts.objects.get_products_for_main_page('tables', 'laptops', 'smartphones', 'pc', 'tv', 'projectors', with_respect_to='notebook'),
@@ -64,6 +62,17 @@ class CategoryDetailView(CartMixin, CategoryDetailMixin, DetailView):
         return context
 
 
+class CartViews(CartMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        categories = Category.objects.get_categories_for_left_sidebar()
+        context = {
+            'cart': self.cart,
+            'categories': categories
+        }
+        return render(request, 'cart.html', context)
+
+
 class AddToCart(CartMixin, View):
     def get(self, request, *args, **kwargs):
         ct_model, product_slug = kwargs.get('ct_model'), kwargs.get('slug')
@@ -78,7 +87,9 @@ class AddToCart(CartMixin, View):
         )
         if created:
             self.cart.products.add(cart_product)
+
         recalc_cart(self.cart)
+
         messages.add_message(request, messages.INFO, 'Товар успешно добавлен!')
         return HttpResponseRedirect ('/cart/')
 
@@ -112,19 +123,6 @@ class ChangeQuantityView(CartMixin, View):
         recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, 'Количество товара успешно изменено!')
         return HttpResponseRedirect ('/cart/')
-
-
-class CartViews(CartMixin, View):
-
-    def get(self, request, *args, **kwargs):
-        categories = Category.objects.get_categories_for_left_sidebar()
-        context = {
-            'cart': self.cart,
-            'categories': categories
-        }
-        return render(request, 'cart.html', context)
-
-
 
 class CheckoutView(CartMixin, View):
     
