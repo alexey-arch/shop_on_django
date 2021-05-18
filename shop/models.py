@@ -381,12 +381,9 @@ class Order(models.Model):
         verbose_name_plural = 'Заказы'
 
     STATUS_DEFAULT = 'new'
-    STATUS_IN_PROGRESS = 'in_progress'
+    STATUS_IN_PROGRESS = 'in_progress'      #прогресс доставки
     STATUS_READY = 'ready'
     STATUS_COMPLETED = 'completed'
-
-    BUYING_TYPE_SELF= 'self'
-    BUYING_TYPE_DELIVERY = 'delivery'
 
     STATUS_CHOICES = (
         (STATUS_DEFAULT, 'Новый'),
